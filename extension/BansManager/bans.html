@@ -1,0 +1,41 @@
+<html lang="en">
+<body>
+<h1>Manage Bans and Redirects: </h1>
+<div>
+    <label>
+        Import Bans:
+        <input type="file" class="importFile">
+    </label>
+    <label>
+        Export Bans:
+        <button id="exportBans">Download redirs.txt</button>
+    </label>
+</div>
+<div>
+    <label>
+        Redirect
+        <input type="text" class="start">
+    </label>
+    <label>
+        =>
+        <input type="text" class="destination">
+    </label>
+    <button class="delete">Delete</button>
+</div>
+<div class="redirects">
+    <ul></ul>
+</div>
+<template id="redirectsTemplate">
+    <li>
+        <a>
+            <h3 class="title">Tab Title</h3>
+            <p>=></p>
+            <p class="pathname">Tab Pathname</p>
+            <button class="delete">Delete</button>
+            <button class="save">Edit</button>
+        </a>
+    </li>
+</template>
+<script src="./bans.js" type="module"></script>
+</body>
+</html>

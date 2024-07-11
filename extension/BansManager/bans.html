@@ -10,6 +10,14 @@
         Export Bans:
         <button id="exportBans">Download redirs.txt</button>
     </label>
+    <label>
+        Revert Changes:
+        <button id="reload">Revert Changes</button>
+    </label>
+    <label>
+        Save Changes:
+        <button id="refresh">Save</button>
+    </label>
 </div>
 <div>
     <label>
@@ -23,16 +31,16 @@
     <button class="delete">Delete</button>
 </div>
 <div class="redirects">
-    <ul></ul>
+    <ul id="banlist"></ul>
 </div>
 <template id="redirectsTemplate">
     <li>
         <a>
-            <h3 class="title">Tab Title</h3>
+            <input class="source">Tab Title</input>
             <p>=></p>
-            <p class="pathname">Tab Pathname</p>
+            <input class="destination">Tab Pathname</input>
             <button class="delete">Delete</button>
-            <button class="save">Edit</button>
+            <button class="save">Save</button>
         </a>
     </li>
 </template>

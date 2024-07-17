@@ -19,30 +19,22 @@
         <button id="refresh">Save</button>
     </label>
 </div>
-<div>
-    <label>
-        Redirect
-        <input type="text" class="start">
-    </label>
-    <label>
-        =>
-        <input type="text" class="destination">
-    </label>
-    <button class="delete">Delete</button>
-</div>
+
 <div class="redirects">
     <ul id="banlist"></ul>
 </div>
 <template id="redirectsTemplate">
-    <li>
-        <a>
-            <input class="source">Tab Title</input>
-            <p>=></p>
-            <input class="destination">Tab Pathname</input>
-            <button class="delete">Delete</button>
-            <button class="save">Save</button>
-        </a>
-    </li>
+    <div>
+        <label>
+            Redirect
+            <input type="text" class="start">
+        </label>
+        <label>
+            =>
+            <input type="text" class="destination">
+        </label>
+        <button class="delete">Delete</button>
+    </div>
 </template>
 <script src="./bans.js" type="module"></script>
 </body>

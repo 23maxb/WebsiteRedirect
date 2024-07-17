@@ -1,26 +1,30 @@
 let redirectList = new Map();
 
 async function readRedirectionList() {
-    browser.storage.local.get('bans').then((bans) => {
-        return bans;
-    });
+    const result = await browser.storage.local.get('bans');
+    return result.bans || {};
 }
 
-// Function to check if a URL should be redirected
-function whereRedirect(url, redirectList) {
-    for (const redirect of redirectList) {
-        if (url.includes(redirect)) {
-
+function fetchRedirect(currentURL) {
+    for (let [key, value] of redirectList) {
+        if (currentURL.includes(key)) {
+            if (value === 'ban' || value === '' || value == null) {
+                return 'BanPage/banned.html';
+            }
+            if (value.includes('http://') || value.includes('https://')) {
+                return value;
+            }
+            return 'https://' + value
         }
     }
-
+    return undefined;
 }
 
 // Function to update redirection list
 async function updateRedirectionList() {
     const newList = await readRedirectionList();
     if (newList) {
-        redirectList = newList;
+        redirectList = new Map(Object.entries(newList));
     }
     return redirectList;
 }
@@ -29,9 +33,18 @@ async function updateRedirectionList() {
 function setupRedirection() {
     browser.webNavigation.onBeforeNavigate.addListener(
         async (details) => {
-            if (shouldRedirect(details.url, redirectList)) {
-                console.log(`Redirecting from ${details.url} to Google`);
-                await browser.tabs.update(details.tabId, {url: 'BanPage/banned.html'});
+            console.log('checked url: ' + details.url);
+            console.log("Redirect list:");
+            for (let [key, value] of redirectList) {
+                console.log(`key: ${key}, value: ${value}`);
+            }
+            let fetchRedirectResult = fetchRedirect(details.url);
+            if (fetchRedirectResult) {
+                console.log(`
+                Redirecting
+                from ${details.url}
+                to ${fetchRedirectResult}`);
+                await browser.tabs.update(details.tabId, {url: fetchRedirectResult});
             }
         },
         {url: [{schemes: ['http', 'https']}]}
@@ -42,7 +55,7 @@ function setupRedirection() {
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'updateRedirectionList') {
         updateRedirectionList().then(updatedList => {
-            sendResponse({success: true, list: updatedList});
+            sendResponse({success: true, list: Object.fromEntries(updatedList)});
         });
         return true; // Indicates we will send a response asynchronously
     }
@@ -52,8 +65,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 async function init() {
     await updateRedirectionList();
     setupRedirection();
-    // Set up periodic updates (e.g., every 5 minutes)
-    setInterval(updateRedirectionList, 5 * 60 * 1000);
+    setInterval(updateRedirectionList, 1000);
 }
 
 // Call the init function
